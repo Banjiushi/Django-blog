@@ -9,12 +9,20 @@
                 <span class="post-date"><a href="#"><time class="entry-date"
                                                           datetime="{{ post.created_time }}">{{ post.created_time }}</time></a></span>
                 <span class="post-author"><a href="#">{{ post.auth }}</a></span>
-                <span class="comments-link"><a href="#">4 评论</a></span>
-                <span class="views-count"><a href="#">588 阅读</a></span>
+                <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>
+                <span class="views-count"><a href="#">{{ post.views }} 阅读</a></span>
             </div>
         </header>
         <div class="entry-content clearfix">
             {{ post.body | safe }}
+            <div class="widget-tag-cloud">
+                <ul>
+                    标签：
+                    {% for tag in post.tags.all %}
+                        <li><a href="{% url 'blog:tag' tag.pk %}"># {{ tag.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </article>
     <section class="comment-area" id="comment-area">
@@ -47,7 +55,7 @@
             </div>
         </form>
         <div class="comment-list-panel">
-            <h3>评论列表，共 <span>4</span> 条评论</h3>
+            <h3>评论列表，共 <span>{{ post.comment_set.count }}</span> 条评论</h3>
             <ul class="comment-list list-unstyled">
               {% for comment in comment_list %}
               <li class="comment-item">
@@ -66,5 +74,8 @@
 {% endblock main %}
 
 {% block toc %}
-
+<div class="widget widget-content">
+    <h3 class="widget-title">文章目录</h3>
+    {{ post.toc|safe }}
+</div>
 {% endblock toc %}
